@@ -44,7 +44,6 @@ import java.util.Locale
 data class TableRowData(
     val barcode1: String,
     val barcode2: String,
-    val barcode3: String,
     val timeStamp :String
 )
 

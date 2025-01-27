@@ -79,75 +79,75 @@
 
 
 
-                        <TextView
-                            android:id="@+id/tvBarcode"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Barcode"
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvBarcode"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="Barcode"-->
 
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@id/til_scan_qr_here"
-                            app:layout_constraintBottom_toBottomOf="@id/til_scan_qr_here"
-                            android:layout_marginTop="10dp"/>
+<!--                            app:layout_constraintStart_toStartOf="parent"-->
+<!--                            app:layout_constraintTop_toTopOf="@id/til_scan_qr_here"-->
+<!--                            app:layout_constraintBottom_toBottomOf="@id/til_scan_qr_here"-->
+<!--                            android:layout_marginTop="10dp"/>-->
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/til_scan_qr_here"
-                            android:layout_width="0dp"
-                            android:weightSum="1"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="@dimen/app_button_radius"
-                            android:layout_marginBottom="@dimen/input_field_radius"
-                            android:ellipsize="end"
-                            android:focusableInTouchMode="true"
-                            android:focusedByDefault="false"
-                            android:hint="Barcode"
-                            android:lines="1"
-                            android:textColorHint="@color/grey_100"
-                            app:boxBackgroundColor="@color/colorSecondary"
-                            app:boxBackgroundMode="outline"
-                            app:boxCornerRadiusBottomEnd="@dimen/input_field_radius"
-                            app:boxCornerRadiusBottomStart="@dimen/input_field_radius"
-                            app:boxCornerRadiusTopEnd="@dimen/input_field_radius"
-                            app:boxCornerRadiusTopStart="@dimen/input_field_radius"
-                            android:layout_marginLeft="12dp"
-                            app:boxStrokeColor="@color/colorPrimary"
-                            app:boxStrokeWidth="@dimen/divider_width"
-                            app:cursorColor="@color/colorPrimary"
-                            app:hintTextColor="@color/colorPrimary"
-                            app:layout_constrainedWidth="true"
-                            app:hintEnabled="false"
-                            app:layout_constraintEnd_toStartOf="@id/iv_scan_qr"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toEndOf="@id/tvBarcode"
-                            app:layout_constraintTop_toBottomOf="@id/btn_scan_file"
-                            app:startIconDrawable="@drawable/ic_scan_qr"
-                            app:startIconTint="@color/colorBlack"
-                            android:layout_marginTop="@dimen/margin_large">
+<!--                        <com.google.android.material.textfield.TextInputLayout-->
+<!--                            android:id="@+id/til_scan_qr_here"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:weightSum="1"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginRight="@dimen/app_button_radius"-->
+<!--                            android:layout_marginBottom="@dimen/input_field_radius"-->
+<!--                            android:ellipsize="end"-->
+<!--                            android:focusableInTouchMode="true"-->
+<!--                            android:focusedByDefault="false"-->
+<!--                            android:hint="Barcode"-->
+<!--                            android:lines="1"-->
+<!--                            android:textColorHint="@color/grey_100"-->
+<!--                            app:boxBackgroundColor="@color/colorSecondary"-->
+<!--                            app:boxBackgroundMode="outline"-->
+<!--                            app:boxCornerRadiusBottomEnd="@dimen/input_field_radius"-->
+<!--                            app:boxCornerRadiusBottomStart="@dimen/input_field_radius"-->
+<!--                            app:boxCornerRadiusTopEnd="@dimen/input_field_radius"-->
+<!--                            app:boxCornerRadiusTopStart="@dimen/input_field_radius"-->
+<!--                            android:layout_marginLeft="12dp"-->
+<!--                            app:boxStrokeColor="@color/colorPrimary"-->
+<!--                            app:boxStrokeWidth="@dimen/divider_width"-->
+<!--                            app:cursorColor="@color/colorPrimary"-->
+<!--                            app:hintTextColor="@color/colorPrimary"-->
+<!--                            app:layout_constrainedWidth="true"-->
+<!--                            app:hintEnabled="false"-->
+<!--                            app:layout_constraintEnd_toStartOf="@id/iv_scan_qr"-->
+<!--                            app:layout_constraintHorizontal_bias="0"-->
+<!--                            app:layout_constraintStart_toEndOf="@id/tvBarcode"-->
+<!--                            app:layout_constraintTop_toBottomOf="@id/btn_scan_file"-->
+<!--                            app:startIconDrawable="@drawable/ic_scan_qr"-->
+<!--                            app:startIconTint="@color/colorBlack"-->
+<!--                            android:layout_marginTop="@dimen/margin_large">-->
 
 
-                            <androidx.appcompat.widget.AppCompatEditText
-                                android:id="@+id/edt_scan_qr_here"
-                                style="@style/smallText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="start"
-                                android:imeOptions="actionDone"
-                                android:inputType="text"
-                                android:maxLines="1"
-                                android:theme="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox" />
-                        </com.google.android.material.textfield.TextInputLayout>
+<!--                            <androidx.appcompat.widget.AppCompatEditText-->
+<!--                                android:id="@+id/edt_scan_qr_here"-->
+<!--                                style="@style/smallText"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:gravity="start"-->
+<!--                                android:imeOptions="actionDone"-->
+<!--                                android:inputType="text"-->
+<!--                                android:maxLines="1"-->
+<!--                                android:theme="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox" />-->
+<!--                        </com.google.android.material.textfield.TextInputLayout>-->
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/iv_scan_qr"
-                            android:layout_width="@dimen/icon_size_big"
-                            android:layout_height="@dimen/icon_size_big"
-                            android:visibility="gone"
-                            android:layout_marginTop="@dimen/margin_small"
-                            android:layout_marginRight="@dimen/app_button_radius"
-                            android:layout_marginBottom="@dimen/input_field_radius"
-                            android:src="@drawable/ic_scan_qr"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+<!--                        <androidx.appcompat.widget.AppCompatImageView-->
+<!--                            android:id="@+id/iv_scan_qr"-->
+<!--                            android:layout_width="@dimen/icon_size_big"-->
+<!--                            android:layout_height="@dimen/icon_size_big"-->
+<!--                            android:visibility="gone"-->
+<!--                            android:layout_marginTop="@dimen/margin_small"-->
+<!--                            android:layout_marginRight="@dimen/app_button_radius"-->
+<!--                            android:layout_marginBottom="@dimen/input_field_radius"-->
+<!--                            android:src="@drawable/ic_scan_qr"-->
+<!--                            app:layout_constraintEnd_toEndOf="parent"-->
+<!--                            app:layout_constraintTop_toTopOf="parent" />-->
 
 
 
@@ -184,7 +184,7 @@
                             app:layout_constraintStart_toEndOf="@id/tvData1"
                             app:cursorColor="@color/colorPrimary"
                             app:hintTextColor="@color/colorPrimary"
-                            app:layout_constraintTop_toBottomOf="@id/til_scan_qr_here"
+                            app:layout_constraintTop_toBottomOf="@id/btn_scan_file"
 
                          app:layout_constraintEnd_toEndOf="parent"  >
 

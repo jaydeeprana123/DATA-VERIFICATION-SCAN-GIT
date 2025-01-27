@@ -51,8 +51,6 @@ class TableAdapter(private val tableData: List<TableRowData>) :
         val tvColumn1: TextView = itemView.findViewById(R.id.tvColumn1)
         val tvColumn2: TextView = itemView.findViewById(R.id.tvColumn2)
         val tvColumn3: TextView = itemView.findViewById(R.id.tvColumn3)
-        val tvColumn4: TextView = itemView.findViewById(R.id.tvColumn4)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TableViewHolder {
@@ -62,11 +60,10 @@ class TableAdapter(private val tableData: List<TableRowData>) :
 
     override fun onBindViewHolder(holder: TableViewHolder, position: Int) {
         val rowData = tableData[position]
-        holder.tvColumn4.visibility = View.VISIBLE
+        holder.tvColumn3.visibility = View.VISIBLE
         holder.tvColumn1.text = rowData.barcode1
         holder.tvColumn2.text = rowData.barcode2
-        holder.tvColumn3.text = rowData.barcode3
-        holder.tvColumn4.text = rowData.timeStamp
+        holder.tvColumn3.text = rowData.timeStamp
     }
 
     override fun getItemCount(): Int {

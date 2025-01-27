@@ -33,7 +33,6 @@ import com.innies.scanbarcode.databinding.ActivityVerifyBarcodeBinding
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileReader
 import java.io.FileWriter
 import java.time.LocalDateTime
@@ -44,7 +43,6 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
     private var totalRows = 0
     private var firstColumnMatched = false
     private var secondColumnMatched = false
-    private var thirdColumnMatched = false
     private lateinit var binding: ActivityVerifyBarcodeBinding
     private val CSV_FILE_NAME = "data.csv" // Change as needed
     val matchedData = mutableListOf<String>()
@@ -121,23 +119,6 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             showRemainingTableDialog(this)
         }
 
-        binding.edtScanQrHere.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE ||
-                actionId == EditorInfo.IME_ACTION_NEXT ||
-                actionId == EditorInfo.IME_ACTION_SEARCH
-            ) {
-
-
-                if (savedFile == null) {
-                    Toast.makeText(this, "Please select CSV file", Toast.LENGTH_SHORT).show()
-                } else {
-                    readCsvFile(savedFile!!, 1, binding.edtScanQrHere.text.toString())
-                }
-                true // Return true to indicate the event is handled
-            } else {
-                false
-            }
-        }
 
 
         binding.edtData1.setOnEditorActionListener { v, actionId, event ->
@@ -150,7 +131,7 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
                 if (savedFile == null) {
                     Toast.makeText(this, "Please select CSV file", Toast.LENGTH_SHORT).show()
                 } else {
-                    readCsvFile(savedFile!!, 2, binding.edtData1.text.toString())
+                    readCsvFile(savedFile!!, 1, binding.edtData1.text.toString())
                 }
                 true // Return true to indicate the event is handled
             } else {
@@ -169,7 +150,7 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
                 if (savedFile == null) {
                     Toast.makeText(this, "Please select CSV file", Toast.LENGTH_SHORT).show()
                 } else {
-                    readCsvFile(savedFile!!, 3, binding.edtData2.text.toString())
+                    readCsvFile(savedFile!!, 2, binding.edtData2.text.toString())
                 }
                 true // Return true to indicate the event is handled
             } else {
@@ -179,13 +160,6 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
 
 
-        binding.edtScanQrHere.doOnTextChanged { text, start, before, count ->
-
-            if (!text.isNullOrEmpty()) {
-                updateUIOnTyping()
-            }
-
-        }
 
         binding.edtData1.doOnTextChanged { text, start, before, count ->
             if (!text.isNullOrEmpty()) {
@@ -280,10 +254,9 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
     fun readCsvFile(file: File, columnIndex: Int, text: String) {
         barcodeData.forEach {
             if ((columnIndex == 1 && it.barcode1 == text) ||
-                (columnIndex == 2 && it.barcode2 == text) ||
-                (columnIndex == 3 && it.barcode3 == text)
+                (columnIndex == 2 && it.barcode2 == text)
             ) {
-                dataAlreadyExistUpdateUI(text)
+                dataAlreadyExistWarningUI(text)
                 return
             }
         }
@@ -335,11 +308,9 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             1 -> {
                 firstColumnMatched = true
 
-                if (secondColumnMatched && thirdColumnMatched) {
+                if (secondColumnMatched) {
                     completeMatch(columns)
                 } else if (!secondColumnMatched) {
-                    binding.edtData1.requestFocus()
-                } else if (!thirdColumnMatched) {
                     binding.edtData2.requestFocus()
                 }
 
@@ -347,25 +318,13 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
             2 -> {
                 secondColumnMatched = true
-                if (firstColumnMatched && thirdColumnMatched) {
+                if (firstColumnMatched) {
                     completeMatch(columns)
                 } else if (!firstColumnMatched) {
-                    binding.edtScanQrHere.requestFocus()
-                } else if (!thirdColumnMatched) {
-                    binding.edtData2.requestFocus()
-                }
-            }
-
-            3 -> {
-                thirdColumnMatched = true
-                if (firstColumnMatched && secondColumnMatched) {
-                    completeMatch(columns)
-                } else if (!firstColumnMatched) {
-                    binding.edtScanQrHere.requestFocus()
-                } else if (!secondColumnMatched) {
                     binding.edtData1.requestFocus()
                 }
             }
+
         }
     }
 
@@ -374,10 +333,8 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
     private fun completeMatch(columns: List<String>) {
         firstColumnMatched = false
         secondColumnMatched = false
-        thirdColumnMatched = false
         matchedRowPosition = null
 
-        binding.edtScanQrHere.setText("")
         binding.edtData1.setText("")
         binding.edtData2.setText("")
 
@@ -388,14 +345,13 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
 
         val lineString =
-            "${columns[1]},${columns[2]},${columns[3]},$formattedDateTime"
+            "${columns[1]},${columns[2]},$formattedDateTime"
 
         Log.e("lineString", lineString)
 
         val tableRowData = TableRowData(
             columns[1],
             columns[2],
-            columns[3],
             formattedDateTime
         )
         remainingData.removeIf { it.barcode1 == columns[1] }
@@ -418,18 +374,17 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
         binding.mainScroll.setBackgroundColor(Color.parseColor(backgroundColor))
         binding.tvResult.setTextColor(Color.parseColor(textColor))
         binding.tvScannedNumber.setTextColor(Color.parseColor(textColor))
-        binding.tvBarcode.setTextColor(Color.parseColor(textColor))
         binding.tvData1.setTextColor(Color.parseColor(textColor))
         binding.tvData2.setTextColor(Color.parseColor(textColor))
     }
 
 
-    private fun dataAlreadyExistUpdateUI(text: String) {
+    /*If data is already exist in scanned CSV then show warning UI*/
+    private fun dataAlreadyExistWarningUI(text: String) {
         binding.clMain.setBackgroundColor(Color.parseColor("#FF0000"))
         binding.mainScroll.setBackgroundColor(Color.parseColor("#FF0000"))
         binding.tvResult.setTextColor(Color.parseColor("#FFFFFF"))
         binding.tvScannedNumber.setTextColor(Color.parseColor("#FFFFFF"))
-        binding.tvBarcode.setTextColor(Color.parseColor("#FFFFFF"))
         binding.tvData1.setTextColor(Color.parseColor("#FFFFFF"))
         binding.tvData2.setTextColor(Color.parseColor("#FFFFFF"))
         binding.tvResult.text = "$text is already scanned!"
@@ -610,7 +565,6 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
         barcodeData.clear()
         matchedData.clear()
 
-        binding.edtScanQrHere.setText("")
         binding.edtData1.setText("")
         binding.edtData2.setText("")
         binding.tvResult.text = "Validation Message"
@@ -622,7 +576,6 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
         binding.mainScroll.setBackgroundColor(Color.parseColor("#FFFFFF"))
         binding.tvResult.setTextColor(Color.parseColor("#000000"))
         binding.tvScannedNumber.setTextColor(Color.parseColor("#000000"))
-        binding.tvBarcode.setTextColor(Color.parseColor("#000000"))
         binding.tvData1.setTextColor(Color.parseColor("#000000"))
         binding.tvData2.setTextColor(Color.parseColor("#000000"))
 
@@ -690,7 +643,7 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
                 Log.e("columns[1]ewrgwe", columns[1])
 
-                remainingData.add(TableRowData(columns[1], columns[2], columns[3], ""))
+                remainingData.add(TableRowData(columns[1], columns[2], ""))
 
             }
 
@@ -731,15 +684,14 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             while (reader.readLine().also { line = it } != null) {
                 val columns = line?.split(",") ?: listOf()
                 var lineString =
-                    columns[0] + "," + columns[1] + "," + columns[2] + "," + columns[3]
+                    columns[0] + "," + columns[1] + "," + columns[2]
 
                 matchedData.add(lineString)
                 barcodeData.add(
                     TableRowData(
                         columns[0],
                         columns[1],
-                        columns[2],
-                        columns[3]
+                        columns[2]
                     )
                 )
 
@@ -772,7 +724,6 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
         val textColor = Color.parseColor("#000000")
         binding.tvResult.setTextColor(textColor)
         binding.tvScannedNumber.setTextColor(textColor)
-        binding.tvBarcode.setTextColor(textColor)
         binding.tvData1.setTextColor(textColor)
         binding.tvData2.setTextColor(textColor)
     }
