@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    >
+
+    <TextView
+        android:id="@+id/tvColumn1"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="Barcode 1"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textSize="10dp"
+        android:gravity="center"
+        android:background="#E0E0E0"/>
+
+    <TextView
+        android:id="@+id/tvColumn2"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="Barcode 2"
+        android:paddingTop="8dp"
+        android:textSize="10dp"
+        android:paddingBottom="8dp"
+        android:gravity="center"
+        android:background="#B0BEC5"/>
+
+    <TextView
+        android:id="@+id/tvColumn3"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="Barcode 3"
+        android:textSize="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:gravity="center"
+        android:background="#90A4AE"/>
+
+    <TextView
+        android:id="@+id/tvColumn4"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="Date&amp;Time"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:gravity="center"
+        android:textSize="10dp"
+        android:background="#607D8B"
+        android:visibility="gone"/>
+
+</LinearLayout>

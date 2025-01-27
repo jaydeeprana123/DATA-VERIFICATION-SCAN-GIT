@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/main_toolbar"
+            layout="@layout/app_toolbar" />
+
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/mainScroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
+            app:layout_constraintVertical_bias="0.0"
+
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/login_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_small"
+                    app:cardBackgroundColor="@color/colorSecondary"
+                    app:cardCornerRadius="@dimen/app_button_radius"
+                    app:cardElevation="@dimen/margin_large"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/login_header">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clMain"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/screen_internal_padding"
+                        >
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_scan_qr_here"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/app_button_radius"
+                            android:layout_marginBottom="@dimen/input_field_radius"
+                            android:ellipsize="end"
+                            android:focusableInTouchMode="true"
+                            android:focusedByDefault="false"
+                            android:hint="Barcode"
+                            android:lines="1"
+                            android:textColorHint="@color/grey_100"
+                            app:boxBackgroundColor="@color/colorSecondary"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusBottomEnd="@dimen/input_field_radius"
+                            app:boxCornerRadiusBottomStart="@dimen/input_field_radius"
+                            app:boxCornerRadiusTopEnd="@dimen/input_field_radius"
+                            app:boxCornerRadiusTopStart="@dimen/input_field_radius"
+                            app:boxStrokeColor="@color/colorPrimary"
+                            app:boxStrokeWidth="@dimen/divider_width"
+                            app:cursorColor="@color/colorPrimary"
+                            app:hintTextColor="@color/colorPrimary"
+                            app:layout_constrainedWidth="true"
+
+                            app:layout_constraintEnd_toStartOf="@id/iv_scan_qr"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:startIconDrawable="@drawable/ic_scan_qr"
+                            app:startIconTint="@color/colorBlack">
+
+
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/edt_scan_qr_here"
+                                style="@style/smallText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="start"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:theme="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_scan_qr"
+                            android:layout_width="@dimen/icon_size_big"
+                            android:layout_height="@dimen/icon_size_big"
+                            android:visibility="gone"
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:layout_marginRight="@dimen/app_button_radius"
+                            android:layout_marginBottom="@dimen/input_field_radius"
+                            android:src="@drawable/ic_scan_qr"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_data1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_large"
+                            android:layout_marginBottom="@dimen/input_field_radius"
+                            android:hint="Data 1"
+                            android:textColorHint="@color/grey_100"
+                            app:boxBackgroundColor="@color/colorSecondary"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusBottomEnd="@dimen/input_field_radius"
+                            app:boxCornerRadiusBottomStart="@dimen/input_field_radius"
+                            app:boxCornerRadiusTopEnd="@dimen/input_field_radius"
+                            app:boxCornerRadiusTopStart="@dimen/input_field_radius"
+                            app:boxStrokeColor="@color/colorPrimary"
+                            app:boxStrokeWidth="@dimen/divider_width"
+
+                            app:cursorColor="@color/colorPrimary"
+                            app:hintTextColor="@color/colorPrimary"
+                            app:layout_constraintTop_toBottomOf="@id/til_scan_qr_here"
+                           >
+
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/edt_data1"
+                                style="@style/smallText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:enabled="false"
+                                android:gravity="start"
+                                android:theme="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_data2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_large"
+                            android:layout_marginBottom="@dimen/input_field_radius"
+                            android:hint="Data 2"
+                            android:textColorHint="@color/grey_100"
+                            app:boxBackgroundColor="@color/colorSecondary"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusBottomEnd="@dimen/input_field_radius"
+                            app:boxCornerRadiusBottomStart="@dimen/input_field_radius"
+                            app:boxCornerRadiusTopEnd="@dimen/input_field_radius"
+                            app:boxCornerRadiusTopStart="@dimen/input_field_radius"
+                            app:boxStrokeColor="@color/colorPrimary"
+                            app:boxStrokeWidth="@dimen/divider_width"
+                            app:cursorColor="@color/colorPrimary"
+                            app:hintTextColor="@color/colorPrimary"
+                            app:layout_constraintBottom_toTopOf="@id/tvScannedNumber"
+                            app:layout_constraintTop_toBottomOf="@id/til_data1">
+
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/edt_data2"
+                                style="@style/smallText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="start"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:enabled="false"
+                                android:maxLines="1"
+                                android:theme="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/tvScannedNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:textSize="@dimen/font_size_regular"
+                            android:paddingTop="@dimen/input_field_radius"
+                            android:text="0 out of 0"
+                            android:visibility="gone"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            app:layout_constraintTop_toBottomOf="@id/til_data2"
+                            tools:layout_editor_absoluteX="36dp" />
+
+
+                        <TextView
+                            android:id="@+id/tvResult"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_large"
+                            android:gravity="center"
+                            android:textSize="@dimen/font_size_regular"
+                            android:paddingBottom="@dimen/input_field_radius"
+                            android:text="Validation Message"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            app:layout_constraintTop_toBottomOf="@id/tvScannedNumber"
+                            tools:layout_editor_absoluteX="36dp" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_scan_file"
+                            style="@style/AppButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_large"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:padding="@dimen/input_field_radius"
+                            android:text="File To Scan"
+                            app:layout_constraintTop_toBottomOf="@id/tvResult"
+                            tools:layout_editor_absoluteX="36dp" />
+
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_open_csv"
+                            style="@style/AppButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_large"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:padding="@dimen/input_field_radius"
+                            android:text="Open CSV"
+                            android:visibility="gone"
+                            app:layout_constraintTop_toBottomOf="@id/btn_scan_file"
+                            tools:layout_editor_absoluteX="36dp" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_scanned_data"
+                            style="@style/AppButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_large"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:padding="@dimen/input_field_radius"
+                            android:text="Scanned Data"
+                            android:visibility="gone"
+                            app:layout_constraintTop_toBottomOf="@id/btn_open_csv"
+                            tools:layout_editor_absoluteX="36dp" />
+
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

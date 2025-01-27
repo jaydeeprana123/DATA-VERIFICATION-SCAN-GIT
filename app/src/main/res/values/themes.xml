@@ -1,0 +1,174 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.ScanBarcode" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+
+    <!-- Base application theme. -->
+    <style name="Theme.GTrackTrace" parent="Theme.AppCompat.Light.NoActionBar">
+        Primary brand color.
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        Secondary brand color.
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnPrimary</item>
+        <item name="background">@color/colorSecondary</item>
+        Status bar color.
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        Customize your theme here.
+    </style>
+
+    <style name="MyThemeOverlay_Toolbar2" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <!-- This attributes is used by title -->
+        <item name="android:textColorPrimary">@color/grey_100</item>
+
+        <!-- This attributes is used by navigation icon and overflow icon -->
+        <item name="colorOnPrimary">@color/colorSecondary</item>
+    </style>
+
+    <style name="AppProgressDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="ThemeOverlay.MaterialComponents.MaterialAlertDialog_Background" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- Background Color-->
+        <item name="android:background">@color/colorOnPrimary</item>
+        <!-- Text Color for title and message -->
+        <item name="colorOnSurface">@color/colorBlack</item>
+        <!-- Style for positive button -->
+        <item name="buttonBarPositiveButtonStyle">@style/DialogButtonStyle</item>
+        <!-- Style for negative button -->
+        <item name="buttonBarNegativeButtonStyle">@style/DialogButtonStyle</item>
+
+    </style>
+
+    <style name="DialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <!-- text color for the button -->
+        <item name="android:textColor">@color/colorPrimary</item>
+        <!-- Background tint for the button -->
+        <item name="backgroundTint">@color/colorOnPrimary</item>
+    </style>
+
+    <style name="AuthHeaderText">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">@dimen/font_size_big</item>
+        <item name="android:fontFamily">@font/hellix_bold</item>
+    </style>
+
+    <style name="AuthHeaderLabel" parent="AuthHeaderText">
+        <item name="android:textColor">@color/grey_100</item>
+        <item name="android:textSize">@dimen/font_size_ex_big</item>
+        <item name="android:fontFamily">@font/hellix_semi_bold</item>
+    </style>
+
+    <style name="smallText" parent="AuthHeaderText">
+        <item name="android:textSize">@dimen/font_size_regular</item>
+        <item name="android:fontFamily">@font/hellix_regular</item>
+    </style>
+
+    <style name="smallTextMedium" parent="AuthHeaderText">
+        <item name="android:textSize">@dimen/font_size_regular</item>
+        <item name="android:fontFamily">@font/hellix_semi_bold</item>
+    </style>
+
+    <style name="tinyTextMedium" parent="AuthHeaderText">
+        <item name="android:textSize">@dimen/font_size_tiny</item>
+        <item name="android:fontFamily">@font/hellix_semi_bold</item>
+    </style>
+
+    <style name="bigText" parent="AuthHeaderLabel">
+        <item name="android:textSize">@dimen/font_size_large</item>
+        <item name="android:fontFamily">@font/hellix_semi_bold</item>
+    </style>
+
+    <style name="hintTextColor" parent="bigText">
+        <item name="android:textColor">@color/colorPrimaryVariant</item>
+    </style>
+
+    <style name="regularText" parent="bigText">
+        <item name="android:textSize">@dimen/font_size_medium</item>
+    </style>
+
+    <style name="regularTextBlack" parent="regularText">
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="AuthHeaderTextWhite">
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:textSize">@dimen/font_size_ex_big</item>
+        <item name="android:fontFamily">@font/hellix_semi_bold</item>
+    </style>
+
+    <style name="AppButton">
+        <item name="android:background">@drawable/app_button_background</item>
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/font_size_regular</item>
+        <item name="android:fontFamily">@font/hellix_bold</item>
+    </style>
+
+
+
+    <style name="ResultButton">
+        <item name="android:background">@drawable/app_button_background</item>
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/font_size_regular</item>
+        <item name="android:fontFamily">@font/hellix_bold</item>
+    </style>
+
+    <style name="AppButtonGrey" parent="AppButton">
+        <item name="android:background">@drawable/app_btn_grey_background</item>
+    </style>
+
+    <style name="AppBarTitle">
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:textSize">@dimen/font_size_large</item>
+        <item name="android:fontFamily">@font/hellix_bold</item>
+    </style>
+
+    <style name="NavTitle" parent="NavSubTitle">
+        <item name="android:textSize">@dimen/font_size_large</item>
+        <item name="android:fontFamily">@font/hellix_semi_bold</item>
+    </style>
+
+    <style name="NavSubTitle">
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:textSize">@dimen/font_size_medium</item>
+        <item name="android:fontFamily">@font/hellix_regular</item>
+    </style>
+
+    <style name="NavSubSite" parent="NavSubTitle">
+        <item name="android:textSize">@dimen/font_size_small</item>
+        <item name="android:fontFamily">@font/hellix_regular</item>
+    </style>
+
+    <style name="titleColor" parent="AuthHeaderTextWhite">
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:fontFamily">@font/hellix_regular</item>
+    </style>
+
+    <style name="Circular">
+        <item name="cornerSize">50%</item>
+    </style>
+
+</resources>
