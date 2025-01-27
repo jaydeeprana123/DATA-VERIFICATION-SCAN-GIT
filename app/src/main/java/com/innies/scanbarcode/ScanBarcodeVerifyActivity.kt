@@ -14,7 +14,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -37,18 +36,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.FileReader
 import java.io.FileWriter
-import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
 
 
 class ScanBarcodeVerifyActivity : AppCompatActivity() {
-
-
     private var totalRows = 0
     private var firstColumnMatched = false
     private var secondColumnMatched = false
@@ -75,6 +67,7 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
         binding = ActivityVerifyBarcodeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.e("here", "Come")
+
 
         createFolders()
         mediaPlayerSuccess = MediaPlayer.create(this, R.raw.success);
@@ -146,50 +139,6 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             }
         }
 
-        binding.edtScanQrHere.doOnTextChanged { text, start, before, count ->
-
-            if(binding.edtScanQrHere.text.toString().isNotEmpty()){
-                binding.clMain.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                binding.mainScroll.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                binding.tvResult.setTextColor(Color.parseColor("#000000"))
-                binding.tvScannedNumber.setTextColor(Color.parseColor("#000000"))
-                binding.tvBarcode.setTextColor(Color.parseColor("#000000"))
-                binding.tvData1.setTextColor(Color.parseColor("#000000"))
-                binding.tvData2.setTextColor(Color.parseColor("#000000"))
-            }
-
-
-        }
-
-        binding.edtData1.doOnTextChanged { text, start, before, count ->
-            if(binding.edtData1.text.toString().isNotEmpty()){
-                binding.clMain.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                binding.mainScroll.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                binding.tvResult.setTextColor(Color.parseColor("#000000"))
-                binding.tvScannedNumber.setTextColor(Color.parseColor("#000000"))
-                binding.tvBarcode.setTextColor(Color.parseColor("#000000"))
-                binding.tvData1.setTextColor(Color.parseColor("#000000"))
-                binding.tvData2.setTextColor(Color.parseColor("#000000"))
-            }
-
-        }
-
-        binding.edtData2.doOnTextChanged { text, start, before, count ->
-            if(binding.edtData2.text.toString().isNotEmpty()){
-                binding.clMain.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                binding.mainScroll.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                binding.tvResult.setTextColor(Color.parseColor("#000000"))
-                binding.tvScannedNumber.setTextColor(Color.parseColor("#000000"))
-                binding.tvBarcode.setTextColor(Color.parseColor("#000000"))
-                binding.tvData1.setTextColor(Color.parseColor("#000000"))
-                binding.tvData2.setTextColor(Color.parseColor("#000000"))
-            }
-
-
-        }
-
-
-
 
         binding.edtData1.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE ||
@@ -200,8 +149,9 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
                 if (savedFile == null) {
                     Toast.makeText(this, "Please select CSV file", Toast.LENGTH_SHORT).show()
-                }  else {
-                    readCsvFile(savedFile!!, 2, binding.edtData1.text.toString())                }
+                } else {
+                    readCsvFile(savedFile!!, 2, binding.edtData1.text.toString())
+                }
                 true // Return true to indicate the event is handled
             } else {
                 false
@@ -225,6 +175,31 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             } else {
                 false
             }
+        }
+
+
+
+        binding.edtScanQrHere.doOnTextChanged { text, start, before, count ->
+
+            if (!text.isNullOrEmpty()) {
+                updateUIOnTyping()
+            }
+
+        }
+
+        binding.edtData1.doOnTextChanged { text, start, before, count ->
+            if (!text.isNullOrEmpty()) {
+                updateUIOnTyping()
+            }
+
+        }
+
+        binding.edtData2.doOnTextChanged { text, start, before, count ->
+            if (!text.isNullOrEmpty()) {
+                updateUIOnTyping()
+            }
+
+
         }
 
 
@@ -301,283 +276,155 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
     }
 
 
-    // Read CSV file and print content in Logcat
+    @RequiresApi(Build.VERSION_CODES.O)
     fun readCsvFile(file: File, columnIndex: Int, text: String) {
-
-            for (i in barcodeData.indices) {
-
-                if(columnIndex == 1 && barcodeData[i].barcode1 == text){
-                    dataAvailableValidate(text)
-                    return
-                }else if(columnIndex == 2 && barcodeData[i].barcode2 == text){
-                    dataAvailableValidate(text)
-                    return
-                }else if(columnIndex == 3 && barcodeData[i].barcode3 == text){
-                    dataAvailableValidate(text)
-                    return
-                }
-
+        barcodeData.forEach {
+            if ((columnIndex == 1 && it.barcode1 == text) ||
+                (columnIndex == 2 && it.barcode2 == text) ||
+                (columnIndex == 3 && it.barcode3 == text)
+            ) {
+                dataAlreadyExistUpdateUI(text)
+                return
             }
-
+        }
 
         try {
-            val reader = BufferedReader(FileReader(file))
-            var line: String?
-            var isFirstRow = true
-            var rowIndex = -1
-            var matchedPosition: Int? = null
-            var isMatched = false
+            BufferedReader(FileReader(file)).use { reader ->
+                reader.lineSequence().forEachIndexed { rowIndex, line ->
+                    val columns = line.split(",").map { it.trim().lowercase() }
+                    if (columns.size > columnIndex) {
+                        val columnData = columns[columnIndex]
+                        Log.e("columnData", columnData)
+                        Log.e("text", text)
 
-            while (reader.readLine().also { line = it } != null) {
-                val columns = line?.split(",") ?: listOf()
+                        if (text.trim().lowercase() == columnData) {
 
-                if (columns.isNotEmpty()) {
-                    val columnData = columns[columnIndex].trim().lowercase()
-                    Log.e("columnData", columnData)
-//                    if (isFirstRow) {
-//                        isFirstRow = false
-//                        rowIndex++
-//                        continue
-//                    }
+                            /// Here if text is match and match row position, then it will alocate
+                            if (matchedRowPosition == null) {
+                                matchedRowPosition = rowIndex
+                            }
 
-                    Log.e("text", text)
+                            if (rowIndex == matchedRowPosition) {
+                                processMatch(columns, columnIndex, text)
+                                return
+                            }
 
-                    if(matchedRowPosition == null && text.trim().lowercase() == columnData){
-                        matchedRowPosition = rowIndex // Store the row index
+
+                        }
                     }
-
-                    if (text.trim().lowercase() == columnData && columnIndex == 1 &&  rowIndex == matchedRowPosition) {
-
-                        binding.tvResult.text = "Match Found!"
-
-                        mediaPlayerSuccess.start()
-
-                        if(!secondColumnMatched){
-                            binding.edtData1.requestFocus()
-                        }else if (!thirdColumnMatched){
-                            binding.edtData2.requestFocus()
-                        }
-
-
-                        binding.clMain.setBackgroundColor(Color.parseColor("#008000"))
-                        binding.mainScroll.setBackgroundColor(Color.parseColor("#008000"))
-                        binding.tvResult.setTextColor(Color.parseColor("#FFFFFF"))
-                        binding.tvScannedNumber.setTextColor(Color.parseColor("#FFFFFF"))
-                        binding.tvBarcode.setTextColor(Color.parseColor("#FFFFFF"))
-                        binding.tvData1.setTextColor(Color.parseColor("#FFFFFF"))
-                        binding.tvData2.setTextColor(Color.parseColor("#FFFFFF"))
-                        isMatched = true
-
-                        firstColumnMatched = true
-
-                        if(secondColumnMatched && thirdColumnMatched){
-
-                            firstColumnMatched = false
-                            secondColumnMatched = false
-                            thirdColumnMatched = false
-                            binding.edtScanQrHere.setText("")
-                            binding.edtData1.setText("")
-                            binding.edtData2.setText("")
-                            matchedRowPosition = null
-                            val currentDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                LocalDate.now()
-                            } else {
-                                TODO("VERSION.SDK_INT < O")
-                            }
-                            val currentDateTime = LocalDateTime.now()
-                            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))
-
-
-                            var lineString = (barcodeData.size + 1).toString() + "," +
-                                columns[1] + "," + columns[2] + "," + columns[3] + "," + formattedDateTime
-
-
-                            Log.e("lineString", lineString)
-
-
-                            var tableRowData = TableRowData(barcodeData.size + 1,
-                                columns[1], columns[2], columns[3],
-                                "$formattedDateTime"
-                            )
-
-                            /// Remove from remaining data list
-                            remainingData.removeIf { it.barcode1 == columns[1] }
-
-                            barcodeData.add(tableRowData)
-                            matchedData.add(lineString) // Add matched row
-                            Log.e("line!!", lineString)
-                            binding.tvScannedNumber.visibility = View.VISIBLE
-                            binding.tvScannedNumber.text =
-                                (matchedData.size -1).toString() + " out of " + totalRows.toString() + "\n\n" + "Last Scanned : " + barcodeData[barcodeData.size - 1].barcode1
-
-
-                            saveMatchedDataToCsv(matchedData, this)
-
-                            //   binding.btnDownload.visibility = View.VISIBLE
-                            hideKeyboard()
-                        }else{
-                            break // Stop searching after finding the first match
-                        }
-
-
-                    } else if (text.trim()
-                            .lowercase() == columnData && rowIndex == matchedRowPosition && columnIndex != 1
-                    ) {
-                        binding.tvResult.text = "Match Found!"
-                        isMatched = true
-                        mediaPlayerSuccess.start()
-                        if (columnIndex == 2 && thirdColumnMatched && firstColumnMatched) {
-                            firstColumnMatched = false
-                            secondColumnMatched = false
-                            thirdColumnMatched = false
-                            binding.edtScanQrHere.setText("")
-                            binding.edtData1.setText("")
-                            binding.edtData2.setText("")
-                            matchedRowPosition = null
-                            val currentDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                LocalDate.now()
-                            } else {
-                                TODO("VERSION.SDK_INT < O")
-                            }
-                            val currentDateTime = LocalDateTime.now()
-                            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))
-
-
-                            var lineString = (barcodeData.size + 1).toString() + "," +
-                            columns[1] + "," + columns[2] + "," + columns[3] + "," + formattedDateTime
-                            Log.e("lineString", lineString)
-
-                            var tableRowData = TableRowData(barcodeData.size + 1,
-                                columns[1], columns[2], columns[3],
-                                "$formattedDateTime"
-                            )
-
-
-                            /// Remove from remaining data list
-                            remainingData.removeIf { it.barcode1 == columns[1] }
-
-                            barcodeData.add(tableRowData)
-                            matchedData.add(lineString) // Add matched row
-                            Log.e("line!!", lineString)
-                            binding.tvScannedNumber.visibility = View.VISIBLE
-                            binding.tvScannedNumber.text =
-                                (matchedData.size - 1).toString() + " out of " + totalRows.toString() + "\n\n" + "Last Scanned : " + barcodeData[barcodeData.size - 1].barcode1
-
-
-                            saveMatchedDataToCsv(matchedData, this)
-
-                            //   binding.btnDownload.visibility = View.VISIBLE
-                            hideKeyboard()
-
-                        } else if (columnIndex == 2) {
-
-                            secondColumnMatched = true
-                            if(!firstColumnMatched){
-                                binding.edtScanQrHere.requestFocus()
-                            }else if (!thirdColumnMatched){
-                                binding.edtData2.requestFocus()
-                            }
-
-
-                        } else if (columnIndex == 3 && secondColumnMatched && firstColumnMatched) {
-                            firstColumnMatched = false
-                            secondColumnMatched = false
-                            thirdColumnMatched = false
-                            matchedRowPosition = null
-
-                            binding.edtScanQrHere.setText("")
-                            binding.edtData1.setText("")
-                            binding.edtData2.setText("")
-
-                            val currentDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                LocalDate.now()
-                            } else {
-                                TODO("VERSION.SDK_INT < O")
-                            }
-                            val currentDateTime = LocalDateTime.now()
-                            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))
-
-
-                            var lineString = (barcodeData.size + 1).toString() + "," +
-                            columns[1] + "," + columns[2] + "," + columns[3] + "," + formattedDateTime
-                            Log.e("lineString", lineString)
-
-                            var tableRowData = TableRowData(barcodeData.size + 1,
-                                columns[1], columns[2], columns[3],
-                                "$formattedDateTime"
-                            )
-                            /// Remove from remaining data list
-                            remainingData.removeIf { it.barcode1 == columns[1] }
-
-                            barcodeData.add(tableRowData)
-                            matchedData.add(lineString) // Add matched row
-                            Log.e("line!!", lineString)
-                            binding.tvScannedNumber.visibility = View.VISIBLE
-                            binding.tvScannedNumber.text =
-                                (matchedData.size - 1).toString() + " out of " + totalRows.toString() + "\n\n" + "Last Scanned " + barcodeData[barcodeData.size - 1].barcode1
-
-                            saveMatchedDataToCsv(matchedData, this)
-
-                            //   binding.btnDownload.visibility = View.VISIBLE
-                            hideKeyboard()
-                        } else if (columnIndex == 3) {
-                            thirdColumnMatched = true
-
-                            if(!firstColumnMatched){
-                                binding.edtScanQrHere.requestFocus()
-                            }else if (!secondColumnMatched){
-                                binding.edtData1.requestFocus()
-                            }
-
-
-                        }
-
-                        binding.clMain.setBackgroundColor(Color.parseColor("#008000"))
-                        binding.mainScroll.setBackgroundColor(Color.parseColor("#008000"))
-                        binding.tvResult.setTextColor(Color.parseColor("#FFFFFF"))
-                        binding.tvScannedNumber.setTextColor(Color.parseColor("#FFFFFF"))
-                        binding.tvBarcode.setTextColor(Color.parseColor("#FFFFFF"))
-                        binding.tvData1.setTextColor(Color.parseColor("#FFFFFF"))
-                        binding.tvData2.setTextColor(Color.parseColor("#FFFFFF"))
-                        break
-                    }
-
-                    rowIndex++
                 }
             }
 
-
-            if (!isMatched) {
-                binding.tvResult.text = "Input Fields do not match!"
-                mediaPlayerFail.start()
-                if (columnIndex == 1) {
-                    firstColumnMatched = false
-                } else if (columnIndex == 2) {
-                    secondColumnMatched = false
-                } else if (columnIndex == 3) {
-                    thirdColumnMatched = false
-                }
-
-
-                hideKeyboard()
-                binding.clMain.setBackgroundColor(Color.parseColor("#FF0000"))
-                binding.mainScroll.setBackgroundColor(Color.parseColor("#FF0000"))
-                binding.tvResult.setTextColor(Color.parseColor("#FFFFFF"))
-                binding.tvScannedNumber.setTextColor(Color.parseColor("#FFFFFF"))
-                binding.tvBarcode.setTextColor(Color.parseColor("#FFFFFF"))
-                binding.tvData1.setTextColor(Color.parseColor("#FFFFFF"))
-                binding.tvData2.setTextColor(Color.parseColor("#FFFFFF"))
-            }
-
-            reader.close()
-
+            binding.tvResult.text = "Input Fields do not match!"
+            mediaPlayerFail.start()
+            updateUIAfterReadCSV(false)
         } catch (e: Exception) {
             Toast.makeText(this, "Error reading CSV file", Toast.LENGTH_SHORT).show()
             Log.e("CSV_ERROR", "Error reading file", e)
         }
     }
 
-    private fun dataAvailableValidate(text : String) {
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun processMatch(columns: List<String>, columnIndex: Int, text: String) {
+        binding.tvResult.text = "Match Found!"
+        mediaPlayerSuccess.start()
+        updateUIAfterReadCSV(true)
+
+        when (columnIndex) {
+            1 -> {
+                firstColumnMatched = true
+
+                if (secondColumnMatched && thirdColumnMatched) {
+                    completeMatch(columns)
+                } else if (!secondColumnMatched) {
+                    binding.edtData1.requestFocus()
+                } else if (!thirdColumnMatched) {
+                    binding.edtData2.requestFocus()
+                }
+
+            }
+
+            2 -> {
+                secondColumnMatched = true
+                if (firstColumnMatched && thirdColumnMatched) {
+                    completeMatch(columns)
+                } else if (!firstColumnMatched) {
+                    binding.edtScanQrHere.requestFocus()
+                } else if (!thirdColumnMatched) {
+                    binding.edtData2.requestFocus()
+                }
+            }
+
+            3 -> {
+                thirdColumnMatched = true
+                if (firstColumnMatched && secondColumnMatched) {
+                    completeMatch(columns)
+                } else if (!firstColumnMatched) {
+                    binding.edtScanQrHere.requestFocus()
+                } else if (!secondColumnMatched) {
+                    binding.edtData1.requestFocus()
+                }
+            }
+        }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun completeMatch(columns: List<String>) {
+        firstColumnMatched = false
+        secondColumnMatched = false
+        thirdColumnMatched = false
+        matchedRowPosition = null
+
+        binding.edtScanQrHere.setText("")
+        binding.edtData1.setText("")
+        binding.edtData2.setText("")
+
+
+        val currentDateTime = LocalDateTime.now()
+        val formattedDateTime =
+            currentDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))
+
+
+        val lineString =
+            "${columns[1]},${columns[2]},${columns[3]},$formattedDateTime"
+
+        Log.e("lineString", lineString)
+
+        val tableRowData = TableRowData(
+            columns[1],
+            columns[2],
+            columns[3],
+            formattedDateTime
+        )
+        remainingData.removeIf { it.barcode1 == columns[1] }
+        barcodeData.add(tableRowData)
+        matchedData.add(lineString)
+
+        binding.tvScannedNumber.visibility = View.VISIBLE
+        binding.tvScannedNumber.text =
+            "${matchedData.size} out of $totalRows\n\nLast Scanned: ${barcodeData.last().barcode1}"
+
+        saveMatchedDataToCsv(matchedData, this)
+        hideKeyboard()
+    }
+
+
+    private fun updateUIAfterReadCSV(isMatch: Boolean) {
+        val backgroundColor = if (isMatch) "#008000" else "#FF0000"
+        val textColor = "#FFFFFF"
+        binding.clMain.setBackgroundColor(Color.parseColor(backgroundColor))
+        binding.mainScroll.setBackgroundColor(Color.parseColor(backgroundColor))
+        binding.tvResult.setTextColor(Color.parseColor(textColor))
+        binding.tvScannedNumber.setTextColor(Color.parseColor(textColor))
+        binding.tvBarcode.setTextColor(Color.parseColor(textColor))
+        binding.tvData1.setTextColor(Color.parseColor(textColor))
+        binding.tvData2.setTextColor(Color.parseColor(textColor))
+    }
+
+
+    private fun dataAlreadyExistUpdateUI(text: String) {
         binding.clMain.setBackgroundColor(Color.parseColor("#FF0000"))
         binding.mainScroll.setBackgroundColor(Color.parseColor("#FF0000"))
         binding.tvResult.setTextColor(Color.parseColor("#FFFFFF"))
@@ -602,46 +449,6 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
-
-
-    /* Save CSV in application default storage*/
-    private fun saveCsvFile(uri: Uri) {
-        try {
-            val inputStream = contentResolver.openInputStream(uri)
-            savedFile = File(filesDir, CSV_FILE_NAME) // Internal storage file
-
-            inputStream?.use { input ->
-                FileOutputStream(savedFile).use { output ->
-                    input.copyTo(output)
-                }
-            }
-
-            binding.btnScanFile.text = savedFile?.name
-
-            Toast.makeText(this, "CSV File Saved Successfully", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Toast.makeText(this, "Error Saving CSV File", Toast.LENGTH_SHORT).show()
-            Log.e("CSV_ERROR", "Error saving file", e)
-        }
-    }
-
-
-    fun getCsvFile(): File? {
-        val file = File(filesDir, CSV_FILE_NAME)
-        return if (file.exists()) file else null
-    }
-
-
-//    @RequiresApi(Build.VERSION_CODES.R)
-//    fun requestAllFilesAccess() {
-//        if (!Environment.isExternalStorageManager()) {
-//            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-//            intent.data = Uri.parse("package:" + applicationContext.packageName)
-//            startActivity(intent)
-//        } else {
-//            Toast.makeText(this, "Permission already granted", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
 
     fun requestAllFilesAccess() {
@@ -803,10 +610,6 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
         barcodeData.clear()
         matchedData.clear()
 
-        var lineString = "Sr No." + "," +
-                "Barcode" + "," + "Data 1" + "," +"Data 2" + "," + "Date & Time"
-        matchedData.add(lineString)
-
         binding.edtScanQrHere.setText("")
         binding.edtData1.setText("")
         binding.edtData2.setText("")
@@ -887,7 +690,7 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
                 Log.e("columns[1]ewrgwe", columns[1])
 
-                remainingData.add(TableRowData(totalRows,columns[1], columns[2], columns[3], ""))
+                remainingData.add(TableRowData(columns[1], columns[2], columns[3], ""))
 
             }
 
@@ -895,11 +698,10 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             reader.close()
 
             binding.tvScannedNumber.text =
-                (matchedData.size - 1).toString() + " out of " + totalRows.toString() + "\n\n" + "Last Scanned :"
+                matchedData.size.toString() + " out of " + totalRows.toString() + "\n\n" + "Last Scanned :"
 
-
-
-            val outputFilePath = Environment.getExternalStorageDirectory().absolutePath + "/output/" + file.name
+            val outputFilePath =
+                Environment.getExternalStorageDirectory().absolutePath + "/output/" + file.name
 
             Log.e("outputFilePath", outputFilePath)
 
@@ -907,10 +709,9 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             val outputFile = File(outputFilePath)
 
             /// Check that out put file is available the get the data
-            if(outputFile.exists()){
+            if (outputFile.exists()) {
                 getOutputCSVData(outputFile)
             }
-
 
 
         } catch (e: Exception) {
@@ -926,38 +727,33 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
         try {
             val reader = BufferedReader(FileReader(file))
             var line: String?
-            var rowIndex = -1
             barcodeData.clear()
-
-            var row = 0
-
             while (reader.readLine().also { line = it } != null) {
+                val columns = line?.split(",") ?: listOf()
+                var lineString =
+                    columns[0] + "," + columns[1] + "," + columns[2] + "," + columns[3]
 
-                row++
+                matchedData.add(lineString)
+                barcodeData.add(
+                    TableRowData(
+                        columns[0],
+                        columns[1],
+                        columns[2],
+                        columns[3]
+                    )
+                )
 
-                if(row !=1){
-                    val columns = line?.split(",") ?: listOf()
-                    var lineString =
-                        columns[0] + "," + columns[1] + "," + columns[2] + "," + columns[3] + "," + columns[4]
+                /// Remove from remaining data list
+                remainingData.removeIf { it.barcode1 == columns[1] }
 
-                    matchedData.add(lineString)
-                    barcodeData.add(TableRowData((columns[0]).toInt(),columns[1],columns[2],columns[3], columns[4]))
-
-                    /// Remove from remaining data list
-                    remainingData.removeIf { it.barcode1 == columns[1] }
-                }
 
             }
 
             Log.e("Total Rows", totalRows.toString()) // Log the total row count
             reader.close()
 
-            binding.btnRemainingData.visibility = View.VISIBLE
-            binding.btnScannedData.visibility = View.VISIBLE
-            binding.btnOpenCsv.visibility = View.VISIBLE
-            binding.tvScannedNumber.visibility = View.VISIBLE
             binding.tvScannedNumber.text =
-                (matchedData.size - 1).toString() + " out of " + totalRows.toString() + "\n\n" + "Last Scanned : " + barcodeData[barcodeData.size - 1].barcode1
+                matchedData.size.toString() + " out of " + totalRows.toString() + "\n\n" + "Last Scanned : " + barcodeData[barcodeData.size - 1].barcode1
 
             binding.tvResult.text = "Validation Message"
 
@@ -969,6 +765,17 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
     }
 
+
+    private fun updateUIOnTyping() {
+        binding.clMain.setBackgroundColor(Color.parseColor("#FFFFFF"))
+        binding.mainScroll.setBackgroundColor(Color.parseColor("#FFFFFF"))
+        val textColor = Color.parseColor("#000000")
+        binding.tvResult.setTextColor(textColor)
+        binding.tvScannedNumber.setTextColor(textColor)
+        binding.tvBarcode.setTextColor(textColor)
+        binding.tvData1.setTextColor(textColor)
+        binding.tvData2.setTextColor(textColor)
+    }
 
 
 }

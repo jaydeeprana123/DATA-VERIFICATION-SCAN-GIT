@@ -42,7 +42,6 @@ import java.util.Locale
 
 
 data class TableRowData(
-    val index : Int,
     val barcode1: String,
     val barcode2: String,
     val barcode3: String,
