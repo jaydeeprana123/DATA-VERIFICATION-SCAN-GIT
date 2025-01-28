@@ -15,7 +15,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -127,11 +130,15 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
                 actionId == EditorInfo.IME_ACTION_SEARCH
             ) {
 
-
                 if (savedFile == null) {
                     Toast.makeText(this, "Please select CSV file", Toast.LENGTH_SHORT).show()
                 } else {
-                    readCsvFile(savedFile!!, 1, binding.edtData1.text.toString())
+
+                    if (binding.edtData1.text.toString().isNotEmpty()) {
+                        readCsvFile(savedFile!!, 1, binding.edtData1.text.toString())
+                    }
+
+
                 }
                 true // Return true to indicate the event is handled
             } else {
@@ -150,7 +157,11 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
                 if (savedFile == null) {
                     Toast.makeText(this, "Please select CSV file", Toast.LENGTH_SHORT).show()
                 } else {
-                    readCsvFile(savedFile!!, 2, binding.edtData2.text.toString())
+
+                    if (binding.edtData2.text.toString().isNotEmpty()) {
+                        readCsvFile(savedFile!!, 2, binding.edtData2.text.toString())
+                    }
+
                 }
                 true // Return true to indicate the event is handled
             } else {
@@ -160,13 +171,62 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
 
 
-
-        binding.edtData1.doOnTextChanged { text, start, before, count ->
-            if (!text.isNullOrEmpty()) {
-                updateUIOnTyping()
+        binding.edtData1.setOnKeyListener { v, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (savedFile == null) {
+                    Toast.makeText(this, "Please select CSV file", Toast.LENGTH_SHORT).show()
+                } else if (binding.edtData1.text.toString().isNotEmpty()) {
+                    readCsvFile(savedFile!!, 1, binding.edtData1.text.toString())
+                //    binding.edtData2.requestFocus() // Move focus to the next EditText
+                }
+                true
+            } else {
+                false
             }
-
         }
+
+
+        binding.edtData2.setOnKeyListener { v, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (savedFile == null) {
+                    Toast.makeText(this, "Please select CSV file", Toast.LENGTH_SHORT).show()
+                } else if (binding.edtData2.text.toString().isNotEmpty()) {
+                    readCsvFile(savedFile!!, 2, binding.edtData2.text.toString())
+                  //  binding.edtData1.requestFocus() // Move focus to the next EditText
+                }
+                true
+            } else {
+                false
+            }
+        }
+
+
+//        binding.edtData1.doOnTextChanged { text, start, before, count ->
+//            if (!text.isNullOrEmpty()) {
+//                updateUIOnTyping()
+//            }
+//
+//        }
+
+
+        binding.edtData1.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                if (binding.edtData2.text.toString().isNotEmpty() && !secondColumnMatched) {
+                    readCsvFile(savedFile!!, 2, binding.edtData2.text.toString())
+                }
+            }
+        }
+
+
+        binding.edtData2.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                if (binding.edtData1.text.toString().isNotEmpty() && !firstColumnMatched) {
+                    readCsvFile(savedFile!!, 1, binding.edtData1.text.toString())
+                }
+            }
+        }
+
+
 
         binding.edtData2.doOnTextChanged { text, start, before, count ->
             if (!text.isNullOrEmpty()) {
@@ -252,10 +312,21 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun readCsvFile(file: File, columnIndex: Int, text: String) {
+
+        Log.e("readCSV text ", text)
+        Log.e("readCSV columnIndex ", columnIndex.toString())
         barcodeData.forEach {
-            if ((columnIndex == 1 && it.barcode1 == text) ||
-                (columnIndex == 2 && it.barcode2 == text)
+            if ((columnIndex == 1 && it.barcode1.trim() == text.trim()) ||
+                (columnIndex == 2 && it.barcode2.trim() == text.trim())
             ) {
+
+                if(columnIndex == 1){
+                    binding.edtData1.setText("")
+                }else if(columnIndex == 2){
+                    binding.edtData2.setText("")
+                }
+
+                Log.e("readCSV already ", "exist")
                 dataAlreadyExistWarningUI(text)
                 return
             }
@@ -264,13 +335,13 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
         try {
             BufferedReader(FileReader(file)).use { reader ->
                 reader.lineSequence().forEachIndexed { rowIndex, line ->
-                    val columns = line.split(",").map { it.trim().lowercase() }
+                    val columns = line.split(",").map { it.trim() }
                     if (columns.size > columnIndex) {
                         val columnData = columns[columnIndex]
                         Log.e("columnData", columnData)
                         Log.e("text", text)
 
-                        if (text.trim().lowercase() == columnData) {
+                        if (text.trim() == columnData.trim()) {
 
                             /// Here if text is match and match row position, then it will alocate
                             if (matchedRowPosition == null) {
@@ -286,6 +357,13 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
                         }
                     }
                 }
+            }
+
+
+            if(columnIndex == 1){
+                binding.edtData1.setText("")
+            }else if(columnIndex == 2){
+                binding.edtData2.setText("")
             }
 
             binding.tvResult.text = "Input Fields do not match!"
@@ -309,9 +387,16 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
                 firstColumnMatched = true
 
                 if (secondColumnMatched) {
+                    binding.edtData1.post {
+                        binding.edtData1.requestFocus() // Moves focus safely
+                    }
                     completeMatch(columns)
                 } else if (!secondColumnMatched) {
-                    binding.edtData2.requestFocus()
+
+                    binding.edtData2.post {
+                        binding.edtData2.requestFocus() // Moves focus safely
+                    }
+
                 }
 
             }
@@ -319,14 +404,22 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             2 -> {
                 secondColumnMatched = true
                 if (firstColumnMatched) {
+                    binding.edtData1.post {
+                        binding.edtData1.requestFocus() // Moves focus safely
+                    }
                     completeMatch(columns)
                 } else if (!firstColumnMatched) {
-                    binding.edtData1.requestFocus()
+
+                    binding.edtData1.post {
+                        binding.edtData1.requestFocus() // Moves focus safely
+                    }
+
                 }
             }
 
         }
     }
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -337,7 +430,7 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
 
         binding.edtData1.setText("")
         binding.edtData2.setText("")
-
+        binding.edtData1.requestFocus()
 
         val currentDateTime = LocalDateTime.now()
         val formattedDateTime =
@@ -363,7 +456,7 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
             "${matchedData.size} out of $totalRows\n\nLast Scanned: ${barcodeData.last().barcode1}"
 
         saveMatchedDataToCsv(matchedData, this)
-        hideKeyboard()
+//        hideKeyboard()
     }
 
 
@@ -568,6 +661,9 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
         binding.edtData1.setText("")
         binding.edtData2.setText("")
         binding.tvResult.text = "Validation Message"
+
+        binding.edtData1.requestFocus()
+
 //        binding.tvScannedNumber.visibility = View.GONE
 //        binding.btnOpenCsv.visibility = View.GONE
 //        binding.btnScannedData.visibility = View.GONE
@@ -696,7 +792,7 @@ class ScanBarcodeVerifyActivity : AppCompatActivity() {
                 )
 
                 /// Remove from remaining data list
-                remainingData.removeIf { it.barcode1 == columns[1] }
+                remainingData.removeIf { it.barcode1 == columns[0] }
 
 
             }
